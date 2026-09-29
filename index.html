@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Test - Les émotions et les conflits</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #eef2ff, #f8fafc);
+            min-height: 100vh;
+            color: #1e293b;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 850px;
+            margin: 40px auto;
+        }
+
+        /* HEADER */
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        .header h1 span {
+            color: #4f46e5;
+        }
+
+        .header p {
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        .badge {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 8px 15px;
+            background: #eef2ff;
+            color: #4f46e5;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        /* QUIZ CARD */
+
+        .quiz-card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        }
+
+        .top {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            color: #64748b;
+            font-weight: bold;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 10px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            width: 10%;
+            background: #4f46e5;
+            transition: 0.3s;
+        }
+
+        .question-fr {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .question-ar {
+            font-size: 18px;
+            direction: rtl;
+            text-align: right;
+            color: #64748b;
+            margin-bottom: 25px;
+        }
+
+        /* ANSWERS */
+
+        .answers {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .answer {
+            border: 2px solid #e2e8f0;
+            padding: 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 16px;
+            background: white;
+        }
+
+        .answer:hover {
+            border-color: #4f46e5;
+            background: #f8faff;
+        }
+
+        .answer.selected {
+            border-color: #4f46e5;
+            background: #eef2ff;
+        }
+
+        .answer.correct {
+            border-color: #16a34a;
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .answer.wrong {
+            border-color: #dc2626;
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .answer-ar {
+            display: block;
+            direction: rtl;
+            margin-top: 5px;
+            color: #64748b;
+        }
+
+        /* BUTTON */
+
+        .btn-container {
+            margin-top: 25px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        button {
+            border: none;
+            background: #4f46e5;
+            color: white;
+            padding: 13px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background: #3730a3;
+        }
+
+        button:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        /* RESULT */
+
+        .result {
+            display: none;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        }
+
+        .result-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        .result h2 {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        .score {
+            font-size: 50px;
+            font-weight: bold;
+            color: #4f46e5;
+            margin: 20px;
+        }
+
+        .message {
+            font-size: 18px;
+            color: #64748b;
+            margin-bottom: 25px;
+        }
+
+        .result-ar {
+            direction: rtl;
+            margin-top: 10px;
+        }
+
+        /* FOOTER */
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 600px) {
+
+            .container {
+                width: 95%;
+                margin: 20px auto;
+            }
+
+            .header h1 {
+                font-size: 23px;
+            }
+
+            .quiz-card {
+                padding: 20px;
+            }
+
+            .question-fr {
+                font-size: 19px;
+            }
+
+            .question-ar {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <h1>
+            Test : <span>Les émotions et les conflits</span>
+        </h1>
+
+        <p>
+            Soft Skills – OFPPT
+        </p>
+
+        <div class="badge">
+            🇫🇷 Français / 🇲🇦 العربية
+        </div>
+
+    </div>
+
+
+    <!-- QUIZ -->
+
+    <div class="quiz-card" id="quiz">
+
+        <div class="top">
+
+            <span id="questionNumber">
+                Question 1 / 10
+            </span>
+
+            <span id="scoreText">
+                Score : 0
+            </span>
+
+        </div>
+
+
+        <div class="progress-container">
+
+            <div class="progress" id="progress"></div>
+
+        </div>
+
+
+        <div class="question-fr" id="questionFr"></div>
+
+        <div class="question-ar" id="questionAr"></div>
+
+
+        <div class="answers" id="answers"></div>
+
+
+        <div class="btn-container">
+
+            <button id="nextBtn" disabled>
+                Question suivante →
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- RESULT -->
+
+    <div class="result" id="result">
+
+        <div class="result-icon">
+            🎉
+        </div>
+
+        <h2>
+            Résultat du test
+        </h2>
+
+        <div class="score" id="finalScore">
+            0 / 10
+        </div>
+
+        <div class="message" id="message"></div>
+
+        <div class="result-ar" id="messageAr"></div>
+
+        <button onclick="restartQuiz()">
+            🔄 Refaire le test
+        </button>
+
+    </div>
+
+
+    <footer>
+        Soft Skills – OFPPT © 2026
+    </footer>
+
+</div>
+
+
+<script>
+
+    /* =========================
+       QUESTIONS
+    ========================= */
+
+    const questions = [
+
+        {
+            fr: "Qu'est-ce qu'un conflit ?",
+            ar: "ما هو الصراع؟",
+
+            answers: [
+                {
+                    fr: "Une situation de désaccord entre deux ou plusieurs personnes",
+                    ar: "حالة اختلاف بين شخصين أو أكثر"
+                },
+
+                {
+                    fr: "Une situation de repos",
+                    ar: "حالة من الراحة"
+                },
+
+                {
+                    fr: "Une activité sportive",
+                    ar: "نشاط رياضي"
+                }
+            ],
+
+            correct: 0
+        },
+
+
+        {
+            fr: "Lequel est un type de conflit ?",
+            ar: "أي واحد من التالي يعتبر نوعاً من الصراع؟",
+
+            answers: [
+                {
+                    fr: "Interpersonnel",
+                    ar: "بين الأشخاص"
+                },
+
+                {
+                    fr: "Sportif",
+                    ar: "رياضي"
+                },
+
+                {
+                    fr: "Alimentaire",
+                    ar: "غذائي"
+                }
+            ],
+
+            correct: 0
+        },
+
+
+        {
+            fr: "Quelle peut être une source de conflit ?",
+            ar: "ما الذي يمكن أن يكون سبباً للصراع؟",
+
+            answers: [
+                {
+                    fr: "Une bonne communication",
+                    ar: "تواصل جيد"
+                },
+
+                {
+                    fr: "Un malentendu",
+                    ar: "سوء فهم"
+                },
+
+                {
+                    fr: "Le respect",
+                    ar: "الاحترام"
+                }
+            ],
+
+            correct: 1
+        },
+
+
+        {
+            fr: "Quelle est la première étape pour gérer un conflit ?",
+            ar: "ما هي أول خطوة لإدارة الصراع؟",
+
+            answers: [
+                {
+                    fr: "Identifier le problème",
+                    ar: "تحديد المشكلة"
+                },
+
+                {
+                    fr: "Ignorer la personne",
+                    ar: "تجاهل الشخص"
+                },
+
+                {
+                    fr: "Créer un autre conflit",
+                    ar: "خلق صراع آخر"
+                }
+            ],
+
+            correct: 0
+        },
+
+
+        {
+            fr: "Quelle émotion peut augmenter les tensions ?",
+            ar: "ما هي العاطفة التي يمكن أن تزيد التوتر؟",
+
+            answers: [
+                {
+                    fr: "Le calme",
+                    ar: "الهدوء"
+                },
+
+                {
+                    fr: "L'empathie",
+                    ar: "التعاطف"
+                },
+
+                {
+                    fr: "La colère",
+                    ar: "الغضب"
+                }
+            ],
+
+            correct: 2
+        },
+
+
+        {
+            fr: "Quelle compétence est importante pour gérer un conflit ?",
+            ar: "ما هي المهارة المهمة لإدارة الصراع؟",
+
+            answers: [
+                {
+                    fr: "L'écoute active",
+                    ar: "الاستماع الفعال"
+                },
+
+                {
+                    fr: "L'agressivité",
+                    ar: "العدوانية"
+                },
+
+                {
+                    fr: "Le manque de respect",
+                    ar: "قلة الاحترام"
+                }
+            ],
+
+            correct: 0
+        },
+
+
+        {
+            fr: "Qu'est-ce qu'un compromis ?",
+            ar: "ما هو الحل الوسط؟",
+
+            answers: [
+                {
+                    fr: "Une personne impose son opinion",
+                    ar: "شخص واحد يفرض رأيه"
+                },
+
+                {
+                    fr: "Chaque partie fait des concessions",
+                    ar: "كل طرف يقدم بعض التنازلات"
+                },
+
+                {
+                    fr: "On évite toujours le problème",
+                    ar: "نتجنب المشكلة دائماً"
+                }
+            ],
+
+            correct: 1
+        },
+
+
+        {
+            fr: "Combien de stratégies contient le modèle de Thomas-Kilmann ?",
+            ar: "كم عدد الاستراتيجيات في نموذج Thomas-Kilmann؟",
+
+            answers: [
+                {
+                    fr: "3 stratégies",
+                    ar: "3 استراتيجيات"
+                },
+
+                {
+                    fr: "4 stratégies",
+                    ar: "4 استراتيجيات"
+                },
+
+                {
+                    fr: "5 stratégies",
+                    ar: "5 استراتيجيات"
+                }
+            ],
+
+            correct: 2
+        },
+
+
+        {
+            fr: "Dans la méthode des 3 chaises, que représente la troisième chaise ?",
+            ar: "ماذا تمثل الكرسي الثالثة في طريقة الكراسي الثلاثة؟",
+
+            answers: [
+                {
+                    fr: "Le point de vue de l'observateur",
+                    ar: "وجهة نظر المراقب"
+                },
+
+                {
+                    fr: "Le point de vue du professeur",
+                    ar: "وجهة نظر الأستاذ"
+                },
+
+                {
+                    fr: "Le point de vue du chef",
+                    ar: "وجهة نظر المدير"
+                }
+            ],
+
+            correct: 0
+        },
+
+
+        {
+            fr: "Quel est l'objectif principal de la gestion des conflits ?",
+            ar: "ما هو الهدف الأساسي من إدارة الصراعات؟",
+
+            answers: [
+                {
+                    fr: "Augmenter les tensions",
+                    ar: "زيادة التوتر"
+                },
+
+                {
+                    fr: "Trouver une solution adaptée",
+                    ar: "إيجاد حل مناسب"
+                },
+
+                {
+                    fr: "Éviter toute communication",
+                    ar: "تجنب التواصل"
+                }
+            ],
+
+            correct: 1
+        }
+
+    ];
+
+
+    /* =========================
+       VARIABLES
+    ========================= */
+
+    let currentQuestion = 0;
+
+    let score = 0;
+
+    let selectedAnswer = null;
+
+
+    /* =========================
+       ELEMENTS
+    ========================= */
+
+    const questionFr =
+        document.getElementById("questionFr");
+
+    const questionAr =
+        document.getElementById("questionAr");
+
+    const answersContainer =
+        document.getElementById("answers");
+
+    const nextBtn =
+        document.getElementById("nextBtn");
+
+    const questionNumber =
+        document.getElementById("questionNumber");
+
+    const scoreText =
+        document.getElementById("scoreText");
+
+    const progress =
+        document.getElementById("progress");
+
+    const quiz =
+        document.getElementById("quiz");
+
+    const result =
+        document.getElementById("result");
+
+    const finalScore =
+        document.getElementById("finalScore");
+
+    const message =
+        document.getElementById("message");
+
+    const messageAr =
+        document.getElementById("messageAr");
+
+
+    /* =========================
+       LOAD QUESTION
+    ========================= */
+
+    function loadQuestion() {
+
+        selectedAnswer = null;
+
+        nextBtn.disabled = true;
+
+        const q = questions[currentQuestion];
+
+
+        questionNumber.textContent =
+            `Question ${currentQuestion + 1} / ${questions.length}`;
+
+
+        questionFr.textContent = q.fr;
+
+        questionAr.textContent = q.ar;
+
+
+        scoreText.textContent =
+            `Score : ${score}`;
+
+
+        progress.style.width =
+            `${((currentQuestion + 1) / questions.length) * 100}%`;
+
+
+        answersContainer.innerHTML = "";
+
+
+        q.answers.forEach((answer, index) => {
+
+            const div =
+                document.createElement("div");
+
+            div.classList.add("answer");
+
+
+            div.innerHTML = `
+                <strong>${String.fromCharCode(65 + index)}.</strong>
+                ${answer.fr}
+
+                <span class="answer-ar">
+                    ${answer.ar}
+                </span>
+            `;
+
+
+            div.addEventListener("click", () => {
+
+                selectAnswer(index);
+
+            });
+
+
+            answersContainer.appendChild(div);
+
+        });
+
+
+        if (currentQuestion === questions.length - 1) {
+
+            nextBtn.textContent =
+                "Voir le résultat ✓";
+
+        } else {
+
+            nextBtn.textContent =
+                "Question suivante →";
+
+        }
+
+    }
+
+
+    /* =========================
+       SELECT ANSWER
+    ========================= */
+
+    function selectAnswer(index) {
+
+        if (selectedAnswer !== null) {
+            return;
+        }
+
+
+        selectedAnswer = index;
+
+
+        const q = questions[currentQuestion];
+
+
+        const answerElements =
+            document.querySelectorAll(".answer");
+
+
+        answerElements.forEach((element, i) => {
+
+            if (i === index) {
+
+                element.classList.add("selected");
+
+            }
+
+        });
+
+
+        nextBtn.disabled = false;
+
+    }
+
+
+    /* =========================
+       NEXT QUESTION
+    ========================= */
+
+    nextBtn.addEventListener("click", () => {
+
+        if (selectedAnswer === null) {
+            return;
+        }
+
+
+        const q = questions[currentQuestion];
+
+
+        const answerElements =
+            document.querySelectorAll(".answer");
+
+
+        /* Montrer la bonne réponse */
+
+        answerElements.forEach((element, i) => {
+
+            if (i === q.correct) {
+
+                element.classList.add("correct");
+
+            }
+
+        });
+
+
+        /* Montrer la mauvaise réponse */
+
+        if (selectedAnswer !== q.correct) {
+
+            answerElements[selectedAnswer]
+                .classList.add("wrong");
+
+        } else {
+
+            score++;
+
+        }
+
+
+        scoreText.textContent =
+            `Score : ${score}`;
+
+
+        nextBtn.disabled = true;
+
+
+        /* Petit délai avant la question suivante */
+
+        setTimeout(() => {
+
+            currentQuestion++;
+
+
+            if (currentQuestion < questions.length) {
+
+                loadQuestion();
+
+            } else {
+
+                showResult();
+
+            }
+
+        }, 700);
+
+    });
+
+
+    /* =========================
+       RESULT
+    ========================= */
+
+    function showResult() {
+
+        quiz.style.display = "none";
+
+        result.style.display = "block";
+
+
+        finalScore.textContent =
+            `${score} / ${questions.length}`;
+
+
+        if (score >= 8) {
+
+            message.textContent =
+                "Excellent ! Vous maîtrisez très bien le sujet.";
+
+            messageAr.textContent =
+                "ممتاز! لديك فهم جيد جداً للموضوع.";
+
+        }
+
+        else if (score >= 5) {
+
+            message.textContent =
+                "Bien ! Vous avez compris les notions principales.";
+
+            messageAr.textContent =
+                "جيد! لقد فهمت المفاهيم الأساسية.";
+
+        }
+
+        else {
+
+            message.textContent =
+                "Vous pouvez encore améliorer vos connaissances.";
+
+            messageAr.textContent =
+                "يمكنك مراجعة الدرس وتحسين معرفتك أكثر.";
+
+        }
+
+    }
+
+
+    /* =========================
+       RESTART
+    ========================= */
+
+    function restartQuiz() {
+
+        currentQuestion = 0;
+
+        score = 0;
+
+        selectedAnswer = null;
+
+
+        quiz.style.display = "block";
+
+        result.style.display = "none";
+
+
+        loadQuestion();
+
+    }
+
+
+    /* =========================
+       START
+    ========================= */
+
+    loadQuestion();
+
+</script>
+
+</body>
+</html>
